@@ -1,0 +1,6 @@
+# visual studio files
+.vs/
+
+# binaries
+bin/
+bin-int/
