@@ -7,10 +7,13 @@
 class Algorithms
 {
 public:
-	Algorithms(std::string keyword);
-
 	std::vector<int> generateKey();
-	std::string generatePassword();
+	std::string generatePassword(const std::string& keyword, const std::string& key, const std::string& txt);
+
+private:
+	void exclusiveOR(std::string& password, const std::string& txt);
+
+
 
 private:
 	std::string key;

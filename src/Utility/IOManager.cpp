@@ -2,6 +2,9 @@
 
 #include "IOManager.h"
 
+#include <iostream>
+#include <cstring>
+
 // A simple utility file to handle IO
 
 namespace IOManager {
@@ -9,7 +12,6 @@ namespace IOManager {
 	// readFromFile(filePath) : vector<string>data, bool status
 	bool readFromFile(const char* filePath, std::vector<std::string>& out_data)
 	{
-		LOG_DEBUG("Reading file: %s", filePath);
 		std::ifstream file(filePath);
 		
 		if (!file.is_open())
@@ -24,7 +26,23 @@ namespace IOManager {
 			out_data.push_back(line);
 		}
 		file.close();
-		LOG_INFO("File reading successful");
+		return true;
+	}
+
+	// writeToFile(data, filePath) : bool status
+	bool writeToFile(const std::string& data, const char* filePath)
+	{
+		std::ofstream file(filePath);
+
+		if (!file.is_open())
+		{
+			LOG_ERROR("Failed to write file: %s", filePath);
+			return false;
+		}
+		
+		file << data;
+
+		file.close();
 		return true;
 	}
 

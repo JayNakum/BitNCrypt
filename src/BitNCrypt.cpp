@@ -2,16 +2,17 @@
 
 #include "Utility/CppLog.h"
 #include "Utility/IOManager.h"
+#include "Utility/Maths.h"
 
 #include <iostream>
 
+#include <thread>
+
 BitNCrypt::BitNCrypt(int count, char** args)
 {
-    LOG_DEBUG("Initializing");
-    if (count < 3)
+    if (count < 2)
     {
         // check for minimum arguments
-        LOG_WARNING("No Arguments Found");
         std::cout << "Invalid arguments." << std::endl;
         std::cout << "See -help for reference." << std::endl;
         help();
@@ -28,16 +29,12 @@ BitNCrypt::BitNCrypt(int count, char** args)
     // initialize the arguments handler
     argumentsHandler = new ArgumentsHandler(arguments);
 
-    LOG_INFO("Initialization Successful");
-
     // generate the password # MAIN METHOD #
     go();
 }
 
 void BitNCrypt::go()
 {
-    LOG_DEBUG("Generating...");
-
     // handle invalid inputs and helps
     if (!(argumentsHandler->processArguments()))
     {
@@ -45,44 +42,148 @@ void BitNCrypt::go()
         return;
     }
 
-    algorithms = new Algorithms(argumentsHandler->getKeyword());
-    bool generate = false, get = false, display = false;
-
-    if (argumentsHandler->getFirstArg() == "-get")
-    {
-        get = true;
-    }
-    else if (argumentsHandler->getFirstArg() == "-generate")
-    {
-        generate = true;
-        std::vector<int> key = algorithms->generateKey();
-        std::cout << "Displaying the key" << std::endl << "Press any key to continue...";
-        std::cin.get();
-        for (auto& k : key)
-        {
-            std::cout << k;
-        }
-        std::cout << std::endl;
-
-    }
-
-    if (argumentsHandler->getArgAt(1) == "-display")
-    {
-        char choice = 'n';
-        std::cout << "Are you sure? (Y/N) ";
-        std::cin >> choice;
-
-        if (choice == 'Y' || choice == 'y')
-        {
-            display = true;
-        }
-
-    }
+    // initialize the algorithm class if there are no invalid inputs
+    algorithms = new Algorithms();
     
 
+    // if user wants to -get a password
+    if (argumentsHandler->getFirstArg() == "-get")
+    {
+        std::vector<std::string> fileData;
+        // check if the key file is provided
+        if (!IOManager::readFromFile("key", fileData))
+        {
+            std::cout << "please provide the key file" << std::endl
+                << "See -help for more details" << std::endl;
+            help();
+            return;
+        }
+        
+        std::string txt;
+        std::thread convert([&]() {
+            for (auto& line : fileData)
+            {
+                // convert the random symbols into numbers
+                for (int k : line)
+                {
+                    txt += k;
+                }
+            }
+        });
 
+        // the main password that will be computed
+        std::string password = "password";
 
-    LOG_INFO("Generating Complete");
+        // get the password from the user
+        std::cout << "Please enter the key: ";
+        std::string key;
+        std::cin >> key;
+
+        // wait for the conversion
+        convert.join();
+
+        // compute the password for the given keyword
+        password = algorithms->generatePassword(argumentsHandler->getKeyword(), key, txt);
+        
+        // if the user wants to -display the generated password
+        std::thread display([&]() {
+            if (argumentsHandler->getArgAt(1) == "-display")
+            {
+                char choice = 'n';
+                // ask for a confirmation
+                std::cout << "Are you sure? (Y/N) ";
+                std::cin >> choice;
+
+                if (choice == 'Y' || choice == 'y')
+                {
+                    std::cout << password << std::endl;
+                }
+            }
+        });
+
+        IOManager::copyToClipboard(password.c_str());
+        display.join();
+    }
+    // if the user wants to -generate a password and txt
+    else if (argumentsHandler->getFirstArg() == "-generate")
+    {
+        std::vector<std::string> fileData;
+        // check if key.txt is provided
+        if (!IOManager::readFromFile("key.txt", fileData))
+        {
+            std::cout << "File not found: key.txt" << std::endl
+                << "See -help for more details" << std::endl;
+            help();
+            return;
+        }
+
+        /// Here multiple threads are being created to 
+        /// 1) generate and display the password key
+        /// 2) jumble the key file
+        /// 3) delete the old key.txt
+        /// this is done for improving execution speed
+
+        // Generate and display the password key
+        std::thread genKey([&]() {
+            std::vector<int> key = algorithms->generateKey();
+            std::cout << "Press any key to display your password...";
+            std::cin.get();
+            for (auto& k : key)
+            {
+                std::cout << k;
+            }
+            std::cout << std::endl << "Please remember it and don't share it" << std::endl;
+            });
+
+        // Jumble the key file
+        std::thread jumbleFile([&]() {
+
+            // convert the multiple line into a single line
+            std::string data;
+            for (auto& line : fileData)
+            {
+                data += line;
+            }
+
+            // 50% chance of adding or subtracting
+            // a random number from each character
+            std::string bytes = "";
+            for (int c : data)
+            {
+                bytes += c;
+                if (Math::random(1))
+                {
+                    bytes += c - Math::random();
+                }
+                else
+                {
+                    bytes += c + Math::random();
+                }
+            }
+
+            // write to file
+            IOManager::writeToFile(bytes);
+
+            std::cout << "key file is generated..." << std::endl
+                << "keep it safe!" << std::endl;
+        });
+
+        // remove the old key.txt
+        std::thread removeFile([&]() {
+            int status = remove("key.txt");
+            if (status)
+            {
+                // if status failed ask user to manually delete the file
+                std::cout << "WARNING: Unable to delete key.txt" << std::endl
+                    << "Please delete it manually." << std::endl;
+            }
+        });
+
+        // wait for all threads to terminate
+        removeFile.join();
+        jumbleFile.join();
+        genKey.join();
+    }
 }
 
 void BitNCrypt::help() const
@@ -92,7 +193,7 @@ void BitNCrypt::help() const
 
 BitNCrypt::~BitNCrypt()
 {
-    LOG_DEBUG("Terminating BitNCrypt");
     // free the memory
     delete argumentsHandler;
+    delete algorithms;
 }

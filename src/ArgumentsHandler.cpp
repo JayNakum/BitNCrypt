@@ -6,15 +6,10 @@
 #include <iostream>
 
 ArgumentsHandler::ArgumentsHandler(const std::vector<std::string>& args)
-	: arguments(args)
-{
-	LOG_INFO("Arguments Handler Initialized Successfully");
-}
+	: arguments(args) {}
 
 bool ArgumentsHandler::processArguments()
 {
-	LOG_DEBUG("Analyzing Syntax");
-
 	// if the user has entered a keyword
 	bool hasKeyword = false;
 
@@ -38,6 +33,9 @@ bool ArgumentsHandler::processArguments()
 		std::cout << "See -help for details." << std::endl;
 		return false;
 	}
+
+	// if user wants to generate new key
+	if (arg1 == "-generate") return true;
 
 	for (auto& arg : arguments)
 	{
@@ -66,13 +64,9 @@ bool ArgumentsHandler::processArguments()
 		{
 			std::cout << "Invalid option: " << arg << std::endl;
 			std::cout << "Please refer to --help or -h" << std::endl;
-			LOG_INFO("Syntax analyzing complete");
 			return false;
 		}
-
 	}
-
-	LOG_INFO("Syntax analyzing complete");
 
 	if (!hasKeyword)
 	{

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core.h"
-
 #include "ArgumentsHandler.h"
 #include "Algorithms.h"
 
