@@ -1,9 +1,13 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "CppLog.h"
 
 #include "IOManager.h"
 
 #include <iostream>
 #include <cstring>
+
+#include <Windows.h>
 
 // A simple utility file to handle IO
 
@@ -49,6 +53,21 @@ namespace IOManager {
 	// copyToClipboard(data) : bool <status>
 	bool copyToClipboard(const char* data)
 	{
-		return false;
+		char some[256]; // your text here, zero ended
+		std::strcpy(some, data);
+		OpenClipboard(GetDesktopWindow());
+		EmptyClipboard();
+		HGLOBAL hg = GlobalAlloc(GMEM_MOVEABLE, ARRAYSIZE(some) + 1);
+		if (!hg)
+		{
+			CloseClipboard();
+			return false;
+		}
+		memcpy(GlobalLock(hg), some, ARRAYSIZE(some) + 1);
+		GlobalUnlock(hg);
+		SetClipboardData(CF_TEXT, hg);
+		CloseClipboard();
+		GlobalFree(hg);
+		return true;
 	}
 }

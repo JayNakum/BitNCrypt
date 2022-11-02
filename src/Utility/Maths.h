@@ -1,6 +1,12 @@
 #pragma once
 
 namespace Math {
+
+	// Left or Right circular shifting
+	int leftCircularShift(unsigned n, int k);
+	int rightCircularShift(unsigned n, int k);
+
+
 	// Function to generate a random number
 	int random();
 	

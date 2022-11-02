@@ -5,10 +5,22 @@
 
 namespace Math {
 	
+	// SHIFTING
+	int leftCircularShift(unsigned n, int k)
+	{
+		// left shift by `k`
+		return (((n << k) | (n >> ((sizeof(int) * 8) - k))) % 26);
+	}
+
+	int rightCircularShift(unsigned n, int k)
+	{
+		// right shift by `k`
+		return (((n >> k) | (n << ((sizeof(int) * 8) - k))) % 26);
+	}
+
 	// RANDOM NUMBER GENERATORS
 	
 	/// each function uses the current time as the seed of random number generator
-
 	// for any random number
 	int random()
 	{

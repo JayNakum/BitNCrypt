@@ -45,7 +45,6 @@ void BitNCrypt::go()
     // initialize the algorithm class if there are no invalid inputs
     algorithms = new Algorithms();
     
-
     // if user wants to -get a password
     if (argumentsHandler->getFirstArg() == "-get")
     {
@@ -101,7 +100,11 @@ void BitNCrypt::go()
             }
         });
 
-        IOManager::copyToClipboard(password.c_str());
+        if (!IOManager::copyToClipboard(password.c_str()))
+        {
+            std::cout << "Unable to copy to clipboard." << std::endl
+                << "Please use -display.";
+        }
         display.join();
     }
     // if the user wants to -generate a password and txt
@@ -125,15 +128,17 @@ void BitNCrypt::go()
 
         // Generate and display the password key
         std::thread genKey([&]() {
-            std::vector<int> key = algorithms->generateKey();
+            std::vector<int> key;
+            key.reserve(6);
+            algorithms->generateKey(key);
             std::cout << "Press any key to display your password...";
             std::cin.get();
             for (auto& k : key)
             {
                 std::cout << k;
             }
-            std::cout << std::endl << "Please remember it and don't share it" << std::endl;
-            });
+            std::cout << std::endl << "Please remember it and don't share it" << std::endl;            
+        });
 
         // Jumble the key file
         std::thread jumbleFile([&]() {
@@ -188,7 +193,12 @@ void BitNCrypt::go()
 
 void BitNCrypt::help() const
 {
-    std::cout << "***************Help***************" << std::endl;
+    std::cout << "-----------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "\t\x1B[32mBitNCrypt Help\x1B[00m" << std::endl << std::endl;
+    std::cout << "\x1B[33m-get\x1B[00m <keyword>" << "\t\t" << "It is used to get a password. A keyword is required." << std::endl << std::endl;
+    std::cout << "\x1B[33m-generate\x1B[00m" << "\t\t" << "It generates a key for you to remember. And it jumbles key.txt (required to be kept in same directory as the exe)" << std::endl << std::endl;
+    std::cout << "\x1B[33m-display\x1B[00m" << "\t\t" << "It will display the generated password." << std::endl;
+    std::cout << "-----------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 }
 
 BitNCrypt::~BitNCrypt()
