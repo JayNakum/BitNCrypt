@@ -19,6 +19,12 @@ BitNCrypt::BitNCrypt(int count, char** args)
         return;
     }
 
+    // get exe path
+    std::string path = args[0];
+    std::cout << path << std::endl;
+    size_t pathPos = path.find_last_of('\\');
+    exePath = path.substr(0, pathPos + 1);
+
     // convert the char** to a vector<string> to pass to the arguments handler
     std::vector<std::string> arguments;
     for (int i = 1; i < count; i++)
@@ -48,9 +54,10 @@ void BitNCrypt::go()
     // if user wants to -get a password
     if (argumentsHandler->getFirstArg() == "-get")
     {
+        std::string keyPath = exePath + "key";
         std::vector<std::string> fileData;
         // check if the key file is provided
-        if (!IOManager::readFromFile("key", fileData))
+        if (!IOManager::readFromFile(keyPath.c_str(), fileData))
         {
             std::cout << "please provide the key file" << std::endl
                 << "See -help for more details" << std::endl;
@@ -81,6 +88,12 @@ void BitNCrypt::go()
         // wait for the conversion
         convert.join();
 
+        if (key.length() != 6)
+        {
+            std::cout << "Key should be of 6 digits only." << std::endl;
+            return;
+        }
+
         // compute the password for the given keyword
         password = algorithms->generatePassword(argumentsHandler->getKeyword(), key, txt);
         
@@ -110,9 +123,10 @@ void BitNCrypt::go()
     // if the user wants to -generate a password and txt
     else if (argumentsHandler->getFirstArg() == "-generate")
     {
+        std::string keyPath = exePath + "key.txt";
         std::vector<std::string> fileData;
         // check if key.txt is provided
-        if (!IOManager::readFromFile("key.txt", fileData))
+        if (!IOManager::readFromFile(keyPath.c_str(), fileData))
         {
             std::cout << "File not found: key.txt" << std::endl
                 << "See -help for more details" << std::endl;

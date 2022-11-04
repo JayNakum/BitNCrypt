@@ -21,4 +21,6 @@ private:
 private:
 	ArgumentsHandler* argumentsHandler;
 	Algorithms* algorithms;
+
+	std::string exePath;
 };
