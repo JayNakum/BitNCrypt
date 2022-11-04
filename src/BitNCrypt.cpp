@@ -21,7 +21,6 @@ BitNCrypt::BitNCrypt(int count, char** args)
 
     // get exe path
     std::string path = args[0];
-    std::cout << path << std::endl;
     size_t pathPos = path.find_last_of('\\');
     exePath = path.substr(0, pathPos + 1);
 
@@ -180,8 +179,10 @@ void BitNCrypt::go()
                 }
             }
 
+            std::string genKey = exePath + "key";
+
             // write to file
-            IOManager::writeToFile(bytes);
+            IOManager::writeToFile(bytes, genKey.c_str());
 
             std::cout << "key file is generated..." << std::endl
                 << "keep it safe!" << std::endl;
@@ -189,7 +190,7 @@ void BitNCrypt::go()
 
         // remove the old key.txt
         std::thread removeFile([&]() {
-            int status = remove("key.txt");
+            int status = remove(keyPath.c_str());
             if (status)
             {
                 // if status failed ask user to manually delete the file
