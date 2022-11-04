@@ -1,7 +1,7 @@
-# BitNCrypt 
+# BitNCrypt ![Star](https://img.shields.io/github/stars/JayNakum/BitNCrypt?style=social)
 An easy to use, simple and effective command line tool for password management.
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/JayNakum/BitNCrypt?include_prereleaseslabel=Download&style=for-the-badge)]()
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/JayNakum/BitNCrypt?include_prereleaseslabel=Download&style=for-the-badge)](https://github.com/JayNakum/BitNCrypt/releases)
 
 ## Some Examples 
     pf2u$o43P6#  
