@@ -1,4 +1,4 @@
-# BitNCrypt ![Star](https://img.shields.io/github/stars/JayNakum/BitNCrypt?style=social)
+# [BitNCrypt](https://github.com/JayNakum/BitNCrypt) ![Star](https://img.shields.io/github/stars/JayNakum/BitNCrypt?style=social)
 An easy to use, simple and effective command line tool for password management.
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/JayNakum/BitNCrypt?include_prereleaseslabel=Download&style=for-the-badge)](https://github.com/JayNakum/BitNCrypt/releases)
@@ -9,7 +9,7 @@ An easy to use, simple and effective command line tool for password management.
     i2Pu$f4g$T  
 
 ## How to setup?
-- Download the *BitNCrypt.exe* file.
+- Download the *[BitNCrypt.exe](https://github.com/JayNakum/BitNCrypt/releases)* file.
 - Create a *key.txt* file in the same directory as *BitNCrypt.exe*.
 - Put the lyrics of your favorite song in the *key.txt* file and make sure to **not share** it with anyone.
 - [OPTIONAL] Set the environment path if you wish to use the tool from any directory.
