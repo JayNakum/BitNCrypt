@@ -2,8 +2,6 @@
 
 #include <iostream>
 #include <thread>
-#include <unordered_map>
-#include <cmath>
 
 #include "Utility/IOManager.h"
 #include "Utility/Maths.h"
@@ -183,16 +181,17 @@ void Algorithms::exclusiveOR(std::string& password, const std::string& txt)
 
 void Algorithms::generateKey(std::vector<int>& out_key)
 {
-	std::unordered_map<int, bool> insertedNumbers = {
-		{1, false},
-		{2, false},
-		{3, false},
-		{4, false},
-		{5, false},
-		{6, false},
-		{7, false},
-		{8, false},
-		{9, false},
+	bool insertedNumbers[] = {
+		false, // 0
+		false, // 1
+		false, // 2
+		false, // 3
+		false, // 4
+		false, // 5
+		false, // 6
+		false, // 7
+		false, // 8
+		false  // 9
 	};
 
 	int tempKey = 0;
@@ -203,10 +202,10 @@ void Algorithms::generateKey(std::vector<int>& out_key)
 		// shuffle allows duplicate numbers in key
 		bool shuffle = false;
 
-		// generate a random number between 1 to 9
-		tempKey = Math::random(1, 9);
+		// generate a random number between 0 to 9
+		tempKey = Math::random(9);
 
-		if (insertedNumbers.at(tempKey))
+		if (insertedNumbers[tempKey])
 		{
 			shuffle = true;
 		}
