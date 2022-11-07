@@ -64,7 +64,7 @@ void Algorithms::finalPermutation(std::string& password, const std::string& key)
 		if ((s >= 'A' && s <= 'Z') || (s >= 'a' && s <= 'z'))
 			result += s;
 		else
-			result += key[key.length() - i];
+			result += (s % 26) + 'A';
 
 		// based on weired maths insert a symbol or key
 		if (k % 2 == 0) result += key[i];
