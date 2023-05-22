@@ -1,5 +1,6 @@
 # [BitNCrypt](https://github.com/JayNakum/BitNCrypt) ![Star](https://img.shields.io/github/stars/JayNakum/BitNCrypt?style=social)
-An easy to use, simple and effective command line tool for password management.
+An easy to use, simple and effective command line tool which can be used to generate and manage passwords.  
+It implements a custom designed algorithm based on the similar concepts of hashing.
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/JayNakum/BitNCrypt?include_prereleaseslabel=Download&style=for-the-badge)](https://github.com/JayNakum/BitNCrypt/releases)
 
