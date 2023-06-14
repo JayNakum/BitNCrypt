@@ -39,7 +39,7 @@ void Algorithms::finalPermutation(std::string& password, const std::string& key)
 {
 	std::string symbols = "!@#$";
 	
-	// divide password into 6 parts
+	// divide password into 6 parts (key length)
 	int n = std::floor(password.length() / 6);
 	std::string subStr[6] = {
 		password.substr(5*n, n),
@@ -52,7 +52,7 @@ void Algorithms::finalPermutation(std::string& password, const std::string& key)
 
 	std::string result = "";
 
-	for (int i = 0; i < key.length(); i++)
+	for (int i = 0; i < 6; i++)
 	{
 		int k = key[i] - '0';
 		std::string ss = subStr[i];
@@ -60,15 +60,14 @@ void Algorithms::finalPermutation(std::string& password, const std::string& key)
 		char s = ss[k % n];
 
 		// if the character is an alphabet then insert it
-		// else insert key[n - i]
 		if ((s >= 'A' && s <= 'Z') || (s >= 'a' && s <= 'z'))
 			result += s;
 		else
 			result += (s % 26) + 'A';
 
 		// based on weired maths insert a symbol or key
-		if (k % 2 == 0) result += key[i];
 		if (k % 3 == 0) result += symbols[k % 4];
+		else result += key[i]; /* ISSUE */
 	}
 	password = result;
 }
