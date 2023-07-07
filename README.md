@@ -24,6 +24,6 @@ It implements a custom designed algorithm based on the similar concepts of hashi
 - If you wish to *display* the password in the console, add ```-display``` after ```-get```.
 
 ## Future Plans
-- Implement better algorithms
+- Implement better algorithms.
 
 Developed by [Jay Nakum](https://JayNakum.github.io)
